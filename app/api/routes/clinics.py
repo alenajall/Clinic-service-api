@@ -41,7 +41,7 @@ def delete_clinic(clinic_id: int, db: Session = Depends(get_db),
                   _: User = Depends(require_role(UserRole.admin))):
     if not clinic_crud.get(db, clinic_id):
         raise HTTPException(status_code=404, detail="Clinic not found")
-    clinic_crud.remove(db, clinic_id)
+    clinic_crud.remove(db, id=clinic_id)
     return None
 @router.get("/{clinic_id}/health-alerts")
 async def clinic_health_alerts(clinic_id: int, db: Session = Depends(get_db)):

@@ -31,5 +31,5 @@ def delete_service(service_id: int, db: Session = Depends(get_db),
                    _: User = Depends(require_role(UserRole.admin))):
     if not service_crud.get(db, service_id):
         raise HTTPException(status_code=404, detail="Service not found")
-    service_crud.remove(db, service_id)
+    service_crud.remove(db, id=service_id)
     return None

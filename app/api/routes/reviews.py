@@ -28,5 +28,5 @@ def delete_review(review_id: int, db: Session = Depends(get_db),
         raise HTTPException(status_code=404, detail="Review not found")
     if review.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not your review")
-    review_crud.remove(db, review_id)
+    review_crud.remove(db, id=review_id)
     return None

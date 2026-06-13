@@ -13,13 +13,27 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.model = model
 
     def get(self, db: Session, id: Any) -> ModelType | None:
-        return db.query(self.model).filter(self.model.id == id).first()
+        return db.get(self.model, id)
 
     def get_multi(self, db: Session, *, skip: int = 0, limit: int = 100) -> list[ModelType]:
         return db.query(self.model).offset(skip).limit(limit).all()
 
+    def create(self, db: Session, obj_in: CreateSchemaType) -> ModelType:
+        obj = self.model(**obj_in.model_dump())
+        db.add(obj)
+        db.commit()
+        db.refresh(obj)
+        return obj
+
+    def update(self, db: Session, obj: ModelType, obj_in: UpdateSchemaType) -> ModelType:
+        for field, value in obj_in.model_dump(exclude_unset=True).items():
+            setattr(obj, field, value)
+        db.commit()
+        db.refresh(obj)
+        return obj
+
     def remove(self, db: Session, *, id: int) -> ModelType:
-        obj = db.query(self.model).get(id)
+        obj = db.get(self.model, id)
         db.delete(obj)
         db.commit()
         return obj

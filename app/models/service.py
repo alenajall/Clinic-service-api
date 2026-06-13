@@ -7,6 +7,7 @@ class Service(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, nullable=False)
+    category = Column(String(100), nullable=True)
     description = Column(String(255), nullable=True)
 
     clinics = relationship("ClinicService", back_populates="service")
